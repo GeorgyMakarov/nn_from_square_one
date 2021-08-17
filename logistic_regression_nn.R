@@ -115,6 +115,31 @@ propagate <- function(w      = NULL,
 }
 
 
+#' Compute gradient descent
+#' 
+#' Optimize model parameters by running a gradient descent algorithm.
+#'
+#' @param w weights, a matrix of dims `(n_x, 1)`, n_x -- number of features
+#' @param b bias, a scalar
+#' @param x_df a data frame with features in columns and observations in rows
+#' @param y_vect a numeric vector of output classes: 1, 0
+#' @param n_iter number of iterations, a scalar
+#' @param lr learning rate, a scalar
+#'
+#' @return list of output parameters
+#' @export
+#'
+#' @examples
+#' w_test <- matrix(1:2, nrow = 2, ncol = 1)
+#' b_test <- 2
+#' x_test <- data.frame(x1 = c(1, 2), x2 = c(3, 4))
+#' y_test <- c(1, 0)
+#' grad_descent(w      = w_test, 
+#'              b      = b_test, 
+#'              x_df   = x_test, 
+#'              y_vect = y_test, 
+#'              n_iter = 100, 
+#'              lr     = 0.009)
 grad_descent <- function(w      = NULL, 
                          b      = NULL, 
                          x_df   = NULL, 
@@ -127,8 +152,8 @@ grad_descent <- function(w      = NULL,
   for (i in 1:n_iter){
     
     prop_res <- propagate(w, b, x_df, y_vect)
-    dw <- prop_res$dw
-    db <- prop_res$db
+    dw <- prop_res$grads$dw
+    db <- prop_res$grads$db
     
     w <- w - lr * dw
     b <- b - lr * db
@@ -146,12 +171,11 @@ grad_descent <- function(w      = NULL,
   
 }
 
-grad_descent(w = w_test, b = b_test, x_df = x_test, y_vect = y_test, n_iter = 100, lr = 0.009)
+
+pred_logit <- function(w = NULL, b = NULL, x_df = NULL){
+  
+  
+  
+}
 
 
-
-w_test <- matrix(1:2, nrow = 2, ncol = 1)
-b_test <- 2
-x_test <- data.frame(x1 = c(1, 2), x2 = c(3, 4))
-y_test <- c(1, 0)
-propagate(w = w_test, b = b_test, x_df = x_test, y_vect = y_test)
