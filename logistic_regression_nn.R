@@ -172,10 +172,43 @@ grad_descent <- function(w      = NULL,
 }
 
 
+#' Compute class predictions
+#' 
+#' Computes class predictions. Predicts positive class if probability is more
+#' than 0.5, otherwise -- predicts negative class. Positive - 1, negative - 0.
+#' Use weights and bias results after gradient descent.
+#'
+#' @param w weights, a matrix of dims `(n_x, 1)`, n_x -- number of features
+#' @param b bias, a scalar
+#' @param x_df a data frame with features in columns and observations in rows
+#'
+#' @return numeric vector of classes [0, 1]
+#' @export
+#'
+#' @examples
+#' w_test <- matrix(1:2, nrow = 2, ncol = 1)
+#' b_test <- 2
+#' x_test <- data.frame(x1 = c(1, 2), x2 = c(3, 4))
+#' y_test <- c(1, 0)
+#' pred_logit(w = w_test, b = b_test, x_df = x_test)
 pred_logit <- function(w = NULL, b = NULL, x_df = NULL){
   
+  # Compute vector a_out predicting the probabilities of class 1
+  m        <- dim(x_df)[1]
+  xm       <- t(x_df)
+  wt       <- t(w)
+  wt_by_x  <- wt %*% xm
+  z_out    <- wt_by_x + b
+  a_out    <- sigmoid(z_out)
   
-  
+  # Convert probabilities to actual class predictions
+  y_hat <- ifelse(test = a_out > 0.5, yes = 1, no = 0)
+  return(y_hat)
 }
 
+
+w_test <- matrix(1:2, nrow = 2, ncol = 1)
+b_test <- 2
+x_test <- data.frame(x1 = c(1, 2), x2 = c(3, 4))
+y_test <- c(1, 0)
 
