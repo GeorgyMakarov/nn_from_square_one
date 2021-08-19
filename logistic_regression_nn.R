@@ -165,7 +165,7 @@ grad_descent <- function(w      = NULL,
   
   params <- list("w" = w, "b" = b)
   grads  <- list("dw" = dw, "db" = db)
-  out    <- list(params, grads)
+  out    <- list("params" = params, "grads" = grads)
   
   return(out)
   
@@ -207,8 +207,67 @@ pred_logit <- function(w = NULL, b = NULL, x_df = NULL){
 }
 
 
-w_test <- matrix(1:2, nrow = 2, ncol = 1)
-b_test <- 2
-x_test <- data.frame(x1 = c(1, 2), x2 = c(3, 4))
-y_test <- c(1, 0)
-
+#' Logistic regression neural network
+#'
+#' @param x_train training data frame with variables 
+#' @param y_train training vector of response variable
+#' @param x_test testing data frame with variables
+#' @param y_test testing vector of response variable
+#' @param n_iter number of iterations, scalar
+#' @param lr learning rate, scalar
+#'
+#' @return list of predictions and accuracy measures
+#' @export
+#'
+#' @examples
+#' x_trn <- data.frame(x1 = c(0.8, 1.1, 1.4, 1.6, 1.9, 2.1, 2.3, 2.4),
+#' x2 = c(2.5, 2.7, 3.1, 3.4, 3.5, 3.7, 4.0, 4.3))
+#' y_trn <- c(1, 1, 1, 1, 1, 0, 0, 0)
+#' x_tst <- data.frame(x1 = c(1, 2), x2 = c(3, 4))
+#' y_tst <- c(1, 0)
+#' log_nn(x_train = x_trn,
+#'        y_train = y_trn,
+#'        x_test  = x_tst,
+#'        y_test  = y_tst,
+#'        n_iter  = 2000,
+#'        lr      = 0.005)
+log_nn <- function(x_train = NULL,
+                   y_train = NULL,
+                   x_test  = NULL,
+                   y_test  = NULL,
+                   n_iter  = 2000,
+                   lr      = 0.5){
+  
+  # Initialize parameters with zeros
+  init_shape  <- dim(x_train)[2]
+  init_params <- initialize_with_zeros(init_shape)
+  init_w      <- init_params$w
+  init_b      <- init_params$b
+  
+  # Implement gradient descent
+  grad_desc   <- grad_descent(w      = init_w,
+                              b      = init_b,
+                              x_df   = x_train,
+                              y_vect = y_train,
+                              n_iter = n_iter,
+                              lr     = lr) 
+  
+  # Retrieve updated parameters w and b
+  upd_w <- grad_desc$params$w
+  upd_b <- grad_desc$params$b
+  
+  # Predict on train and test sets
+  y_hat_test  <- pred_logit(w = upd_w, b = upd_b, x_df = x_test)
+  y_hat_train <- pred_logit(w = upd_w, b = upd_b, x_df = x_train)
+  
+  # Compute prediction errors
+  train_acc <- 100 - mean(abs(y_hat_train - y_train)) * 100
+  test_acc  <- 100 - mean(abs(y_hat_test - y_test)) * 100
+  errors    <- list("train_acc" = train_acc,
+                    "test_acc"  = test_acc)
+  
+  res <- list("train"    = y_hat_train, 
+              "test"     = y_hat_test,
+              "accuracy" = errors)
+  return(res)
+}
