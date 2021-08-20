@@ -7,7 +7,7 @@ model.
 Part 1:
 
 - [x] Logistic regression neural network  
-- [ ] Planar data classification with simple neural network  
+- [ ] Nonlinear classification with simple neural network  
 - [ ] Build NN step by step  
 - [ ] Deep neural network  
 
