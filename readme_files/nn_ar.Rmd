@@ -1,0 +1,66 @@
+---
+title: "Neural network autoregression"
+author: "George Makarov"
+date: "12/01/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, echo = F, message = F, warning = F}
+pkgs <- c("fpp2")
+deps <- lapply(pkgs, library, character.only = T)
+```
+
+
+## 01. Neural network autoregression basics
+
+We can use lagged values of the time series as inputs to neural networks. This
+is *neural network autoregression (NNAR)* model. The simplest NNAR model is a
+*feed-forward* network with *1* hidden layer.
+
+We can define NNAR for non-seasonal and seasonal cases:
+
+- **NNAR(p, k)** -- non-seasonal model;  
+- **NNAR(p, P, k)** -- seasonal model;  
+
+where: 
+
+- *p* -- lagged inputs;  
+- *P* -- lagged seasonal inputs;  
+- *k* -- nodes in hidden layer.  
+
+For example, NNAR(5, 2) uses the last *5* observations as lagged inputs and it 
+has *2* neurons in the hidden layer. Another example, 
+NNAR(2, 1, 2)\textsubscript{12} uses inputs $y_{t-1}$, $y_{t-2}$ -- as lagged 
+inputs, $y_{t-12}$ -- as seasonal input and has *2* neurons in the hidden layer.
+
+The simplest way to build a NNAR is by using the `netar()` function from `fpp2`
+package. This function specifies the values of *p*, *P*, *k* automatically, if
+those were not defined by a user:
+
+- *p* is the optimal number of lags for *AR(p)* model, chosen by *AIC*;  
+- *P = 1*;  
+- *k* -- result of computation $\frac{(p + P + 1)}{2}$ rounded to nearest *int*;  
+
+If you want the forecast to stay positive, define `lambda = 0` parameter in the
+`nnetar()` function.
+
+Lets consider an example with the surface of the sun dark spots.
+
+```{r, fig.cap = "Fig. 01.01: Forecast from automatic nnetar()"}
+fit <- forecast::nnetar(sunspotarea)
+autoplot(forecast(fit, h = 20))
+```
+
+
+The plot shows that the model forecasted negative sun spots. This is impossible.
+We can use log transformation if we want to keep the forecasts positive.
+
+```{r, fig.cap = "Fig. 01.02: Log transformed auto nnetar()"}
+fit <- forecast::nnetar(sunspotarea, lambda = 0)
+autoplot(forecast(fit, h = 20))
+```
+

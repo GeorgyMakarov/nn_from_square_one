@@ -1,0 +1,55 @@
+---
+title: "Optimize activation functions"
+author: "George Makarov"
+date: "25/01/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo    = TRUE)
+knitr::opts_chunk$set(warning = TRUE)
+```
+
+## Optimize activation functions
+
+Some packages use `ifelse()` in activation functions. This function is a
+vectorized version of the standard control combination of functions
+`if (condition) <X> else <Y>`. Function `ifelse()` is more programmer efficient.
+One can understand it easier too. However it is **less* computationally efficient
+than its hardcoded alternative.
+
+The example below compares `ifelse()` to alternative approach. We start from
+preparing a large matrix.
+
+```{r}
+n  <- c(-1, 0, 1, 2, 3, 4, 5)
+s  <- 3e7
+n  <- sample(x = n, size = s, replace = T)
+w  <- matrix(n, nrow = 5, ncol = s / 5)
+dim(w)
+```
+
+Lets make two `relu` functions to demonstrate the difference.
+
+```{r}
+relu_ifelse <- function(x){return(ifelse(x >= 0, x, 0))}
+relu_hard   <- function(x){out <- x; out[out < 0] <- 0; return(out)}
+```
+
+Now lets compare the execution time of each function.
+
+```{r}
+system.time({t1 <- relu_ifelse(w)})
+system.time({t2 <- relu_hard(w)})
+```
+
+Check tht both results are identical:
+
+```{r}
+identical(t1, t2)
+```
+
+## Summary
+
+Using hardcoded alternative in activation function is **4** times faster than
+the vectorized `ifelse()` function.
