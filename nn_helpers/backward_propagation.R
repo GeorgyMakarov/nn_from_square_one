@@ -13,7 +13,7 @@ backward_propagation <- function(x, y, cache, par, ls){
   al   <- paste0("a", l)     ## last a
   al_1 <- paste0("a", l - 1) ## previous a
   
-  
+  browser()
   # Differentiate last layer -- it is differentiated differently than other
   g[[dzl]] <- cache[[al]] - y
   g[[dwl]] <- (1 / m) * (g[[dzl]] %*% t(cache[[al_1]]))

@@ -9,14 +9,17 @@ deps3 <- lapply(X   = list.files(path = "./simple_helpers"),
 rm(deps1, deps2, deps3)
 
 
-x <- matrix(rnorm(n = 2 * 500), nrow = 2, ncol = 500, byrow = T)
-y <- matrix(round(rnorm(n = 1 * 500, 0.5, 0.1), 0), 1, 500, byrow = T)
+# x <- matrix(rnorm(n = 2 * 500), nrow = 2, ncol = 500, byrow = T)
+# y <- matrix(round(rnorm(n = 1 * 500, 0.5, 0.1), 0), 1, 500, byrow = T)
+x <- matrix(c(0.15, 0.20, 0.11, 0.28), nrow = 2, ncol = 2)
+y <- matrix(c(0, 1), nrow = 1, ncol = 2)
 
-layers1 <- get_layer_size(x, y, hn = c(4))
+
+layers1 <- get_layer_size(x, y, hn = c(4, 2))
 set.seed(123)
 init_p1 <- init_params(layers1)
 
-fwd_prop1 <- fwd_propagation(x, init_p1, c("tanh", "sigmoid"), layers1, 0.05)
+fwd_prop1 <- fwd_propagation(x, init_p1, c("relu", "relu","relu"), layers1, 0.05)
 bck_prop1 <- backward_propagation(x, y, fwd_prop1, init_p1, layers1)
 
 
