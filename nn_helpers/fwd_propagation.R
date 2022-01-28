@@ -32,7 +32,7 @@ fwd_propagation <- function(x, par, arch, ls, alpha){
       f_nm <- paste0(arch[i], '(cache[["z1"]])')
       cache[["z1"]] <- w %*% x + b
       cache[["a1"]] <- eval(parse(text = f_nm))
-      cache[["b1"]] <- b
+      # cache[["b1"]] <- b
       
     } else {
       
@@ -60,7 +60,7 @@ fwd_propagation <- function(x, par, arch, ls, alpha){
       
       cache[[z_out]] <- w %*% a + b
       cache[[a_out]] <- eval(parse(text = f_nm))
-      cache[[b_out]] <- b
+      # cache[[b_out]] <- b
       
     }
   }
