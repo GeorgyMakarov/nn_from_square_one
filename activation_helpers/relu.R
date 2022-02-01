@@ -19,7 +19,10 @@
 #' @return numeric vector
 #' @export
 relu <- function(x){
-  out          <- x
-  out[out < 0] <- 0
+  a        <- x
+  a[a < 0] <- 0
+  ch1      <- dim(x)[1] == dim(a)[1] && dim(x)[2] == dim(a)[2]
+  if (!ch1){stop("Dimensions of activation and input do not match")}
+  out      <- list("a" = a, "z" = x)
   return(out)
 }
