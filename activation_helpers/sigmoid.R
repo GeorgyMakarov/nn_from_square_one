@@ -7,8 +7,4 @@
 #' @return numeric vector
 #' @export
 #'
-sigmoid <- function(x){
-  a     <- 1 / (1 + exp(-x))
-  out   <- list("a" = a, "z" = x)
-  return(out)
-}
+sigmoid <- function(x){return(1 / (1 + exp(-x)))}

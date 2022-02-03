@@ -9,6 +9,7 @@ exec(open('./helpers_py/get_layer_py.py').read())
 exec(open('./helpers_py/init_py.py').read())
 exec(open('./helpers_py/linear_fwd.py').read())
 exec(open('./helpers_py/linear_act_fwd.py').read())
+exec(open('./helpers_py/l_model_fwd.py').read())
 exec(open('./helpers_py/sigmoid.py').read())
 exec(open('./helpers_py/relu.py').read())
 
@@ -20,7 +21,6 @@ x  = np.array([[0.15, 0.11, 0.12], [0.20, 0.28, 0.30]])
 xa = 2
 xb = 3
 x  = np.array(x).reshape(xa, xb)
-print(x)
 
 """
 Create input matrix of output variable
@@ -29,21 +29,16 @@ y  = np.array([0, 1, 1])
 ya = 1
 yb = 3
 y  = np.array(y).reshape(ya, yb)
-print(y)
 
 l = [5, 2]
 
-layers = get_layer_py(x, y, l)
-print(layers)
-
-parameters = init_py(ld = layers)
-print(parameters)
-
+layers          = get_layer_py(x, y, l)
+parameters      = init_py(ld = layers)
 z, linear_cache = linear_fwd(x, parameters['w1'], parameters['b1'])
-print("z = " + str(z))
+a, linear_activation_cache = linear_act_fwd(x, parameters['w1'], parameters['b1'], "sigmoid")
+a, linear_activation_cache = linear_act_fwd(x, parameters['w1'], parameters['b1'], "relu")
 
-a, lac = linear_act_fwd(x, parameters['w1'], parameters['b1'], "sigmoid")
-a, lac = linear_act_fwd(x, parameters['w1'], parameters['b1'], "relu")
+al, caches = l_model_fwd(x, parameters)
 
 
 """
@@ -56,5 +51,3 @@ b1 = np.array(b1).reshape(5, 1)
 
 z, lin = linear_fwd(x, w1, b1)
 a, aca = linear_act_fwd(x, w1, b1, "sigmoid")
-
-
