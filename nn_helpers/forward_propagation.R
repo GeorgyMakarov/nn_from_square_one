@@ -1,3 +1,15 @@
+#' Forward propagation
+#' 
+#' Computes forward propagation by taking input matrix of features variables
+#' and initial parameters.
+#'
+#' @param x feature matrix
+#' @param params list of initial parameters
+#' @param actif vector of activation functions
+#' @param layers vector of layers
+#'
+#' @return list of z and a
+#' @export
 forward_propagation <- function(x, params, actif, layers){
   
   l <- length(layers) - 1
@@ -13,8 +25,14 @@ forward_propagation <- function(x, params, actif, layers){
     assign(x = paste0('a', i), value = a)
   }
   
+  # Remove all variables that we do not need in the output. This is
+  # required to be able to handle as many layers as required.
   rm(x, params, actif, layers, f, w, b, z, a, l, i)
   
-  browser()
+  # Collect output variables from environment
+  out_vars <- ls()
+  out      <- mget(out_vars)
+  
+  return(out)
   
 }
