@@ -10,4 +10,5 @@ y = np.array(y).reshape(1, 3)
 dal1 = np.divide(y, a)
 dal2 = np.divide(1 - y, 1 - a)
 
-dal  = -(dal1 - dal2)2da
+dal  = -(dal1 - dal2)
+dal1

@@ -13,11 +13,9 @@
 #' @export
 back_propagation <- function(x, y, param, cache, l, activation){
   
-  grads <- list()     ## gradient storage
   m     <- dim(x)[2]  ## number of observations
   
   # Define last activation. Must be always l - 1. Required to compute dal
-  browser()
   last_a <- paste0('a', length(l) - 1)
   al     <- cache[[last_a]]
   
@@ -26,31 +24,52 @@ back_propagation <- function(x, y, param, cache, l, activation){
   
   # Check that the last activation is either sigmoid or softmax -- otherwise
   # default to sigmoid.
-  if (!c("sigmoid", "softmax") %in% activation[length(activation)]){
-    stop("Last activation must be sigmoid or softmax")
+  cond <- !any(c("sigmoid", "softmax") %in% activation[length(activation)])
+  if (cond){stop("Last activation must be sigmoid or softmax")}
+  
+  
+  # Compute initial dA for last activation. This becomes input for linear
+  # activation.
+  dal1 <- y / al
+  dal2 <- (1 - y) / (1 - al)
+  dal  <- -(dal1 - dal2)
+  
+  for (i in seq(length(l) - 1, 1)){
+    
+    # Define required variables
+    if (i == 1){
+      a_prev <- x
+    } else {
+      a_prev <- cache[[paste0('a', (i - 1))]]
+    }
+    
+    w      <- cache[[paste0('w', i)]]
+    z      <- cache[[paste0('z', i)]]
+    actif  <- activation[[i]]
+    li     <- l[[i + 1]]
+    
+    # Compute dz as by applying backwards activation functions
+    dz <- activation_backward(da = dal, z = z, f = actif)
+    dw <- (1 / m) * (dz %*% t(a_prev))
+    db <- matrix((1 / m) * sum(dz), nrow = li)
+    
+    # Assign new variables
+    assign(x = paste0('dz', i), value = dz)
+    assign(x = paste0('dw', i), value = dw)
+    assign(x = paste0('db', i), value = db)
+    assign(x = paste0('da', i), value = dal)
+    
+    dal <- t(w) %*% dz
   }
   
+  # Clean up local environment
+  rm(x, y, param, cache, l, activation, m, last_a, al, dal1, dal2, dal,
+     cond, i, a_prev, w, z, actif, li, dz, dw, db)
   
+  # Get all output from environment
+  out_vars <- ls()
+  out      <- mget(out_vars)
   
-  
-  
-  n_x <- l_size[['n_x']]
-  n_h <- l_size[['n_h']]
-  n_y <- l_size[['n_y']]
-  a2  <- cache[['a2']]
-  a1  <- cache[['a1']]
-  w2  <- param[['w2']]
-  
-  dz2     <- a2 - y
-  dw2     <- (1/m) * (dz2 %*% t(a1))
-  db2     <- matrix((1/m) * sum(dz2), nrow = n_y)
-  db2_adj <- matrix(rep(db2, m), nrow = n_y)
-  
-  dz1     <- (t(w2) %*% dz2) * (1 - a1 ^ 2)
-  dw1     <- (1 / m) * (dz1 %*% t(x))
-  db1     <- matrix((1 / m) * sum(dz1), nrow = n_h)
-  db1_adj <- matrix(rep(db1, m), nrow = n_h)
-  
-  out <- list("dw1" = dw1, "db1" = db1, "dw2" = dw2, "db2" = db2)
   return(out)
+  
 }

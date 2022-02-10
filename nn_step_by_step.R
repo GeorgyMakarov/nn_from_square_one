@@ -26,14 +26,9 @@ set.seed(123)
 p <- init_params(l)
 
 fwd_prop <- forward_propagation(x = x, params = p, actif = f, layers = l)
-l_cost   <- compute_cost(x, y, fwd_prop, l, f)
+l_cost   <- compute_cost(x, y, fwd_prop, l)
 
 
 # Compute backward propagation --------------------------------------------
 
 bck_prop <- back_propagation(x, y, p, fwd_prop, l, f)
-
-
-
-
-

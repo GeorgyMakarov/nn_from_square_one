@@ -21,7 +21,9 @@ forward_propagation <- function(x, params, actif, layers){
     b <- params[[paste0('b', i)]]
     z <- linear_fwd(a, w, b)
     a <- activation_fwd(z, f)
+    assign(x = paste0('w', i), value = w)
     assign(x = paste0('z', i), value = z)
+    assign(x = paste0('b', i), value = b)
     assign(x = paste0('a', i), value = a)
   }
   
