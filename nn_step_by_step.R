@@ -29,6 +29,19 @@ fwd_prop <- forward_propagation(x = x, params = p, actif = f, layers = l)
 l_cost   <- compute_cost(x, y, fwd_prop, l)
 
 
-# Compute backward propagation --------------------------------------------
+# Compute backward propagation -------------------------------------------------
 
 bck_prop <- back_propagation(x, y, p, fwd_prop, l, f)
+
+
+# Update parameters -------------------------------------------------------
+
+upd_par <- update_params(bck_prop, p, 0.8, l)
+
+
+# Make train function -----------------------------------------------------
+
+fit <- train_nn(x, y, 1000, 0.6, c(5, 2), c("relu", "relu", "sigmoid"), T)
+
+
+
