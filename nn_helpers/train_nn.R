@@ -2,7 +2,7 @@ train_nn <- function(x, y, epochs, lr, hn, f, track = F){
   
   # Initialize parameters
   l      <- get_layer_size(x, y, hn)
-  p      <- init_params(l)
+  p      <- init_params(x, l)
   cost_h <- c()           ## variable to store cost
   trackr <- 0.1 * epochs  ## variable to trace progress
   

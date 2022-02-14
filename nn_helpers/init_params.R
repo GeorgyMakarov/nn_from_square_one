@@ -18,7 +18,7 @@
 #' set.seed(123)
 #' layers <- as.list(sample(x = layers, size = 1e4, replace = T))
 #' system.time(init_params(ls = layers))
-init_params <- function(ls){
+init_params <- function(x, ls){
   
   m   <- dim(x)[2]  ## number of observations
   l   <- length(ls) ## number of layers in the network

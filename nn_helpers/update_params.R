@@ -1,4 +1,4 @@
-update_params <- function(bp, ps, lr, ll){
+update_params <- function(bp, p, lr, ll){
   res <- list() ## define list for output
   for (i in 1:(length(ll) - 1)){
     
