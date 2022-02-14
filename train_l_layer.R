@@ -57,8 +57,8 @@ rm(df, te_set, tr_set)
 
 
 # Train neural network ---------------------------------------------------------
-act <- c("tanh", "relu", "sigmoid")
-fit <- train_nn(x_train, y_train, 10000, 0.9, c(4, 5), act, T)
+act <- c("tanh", "tanh", "sigmoid")
+fit <- train_nn(x_train, y_train, 6000, 0.9, c(10, 5), act, T)
 
 
 # Predict on test set ----------------------------------------------------------
