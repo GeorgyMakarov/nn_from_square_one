@@ -8,17 +8,13 @@
 #' `dim(wl) = c(l+1, l)`
 #' `dim(bl) = c(l+1, 1)`
 #'
+#' @param x matrix, input feature variables
 #' @param ls list of layer sizes
+#' @param im character scalar, initialization method
 #'
 #' @return list of matrices
 #' @export
-#'
-#' @examples
-#' layers <- 1:6
-#' set.seed(123)
-#' layers <- as.list(sample(x = layers, size = 1e4, replace = T))
-#' system.time(init_params(ls = layers))
-init_params <- function(x, ls){
+init_params <- function(x, ls, im){
   
   m   <- dim(x)[2]  ## number of observations
   l   <- length(ls) ## number of layers in the network
@@ -31,7 +27,12 @@ init_params <- function(x, ls){
     nl1 <- ls[[i]]
     nl  <- ls[[i - 1]]
     
-    w <- matrix(runif(nl1 * nl), nrow = nl1, ncol = nl, byrow = T) * 0.01
+    w   <- switch(EXPR = im,
+                  "stand" = init_stand(nl1, nl),
+                  "rand"  = init_rand(nl1, nl),
+                  "he"    = init_he(nl1, nl))
+    
+    # w <- matrix(runif(nl1 * nl), nrow = nl1, ncol = nl, byrow = T) * 0.01
     b <- matrix(rep(0, nl1), nrow = nl1)
     
     out[[paste0("w", i - 1)]] <- w
