@@ -8,11 +8,11 @@ Part 1:
 
 - [x] Logistic regression neural network  
 - [x] Nonlinear classification with simple neural network  
-- [ ] Build NN step by step  
+- [x] Build NN step by step  
 
 Part 2:
 
-- [ ] Initialization  
+- [x] Initialization  
 - [ ] Regularization  
 - [ ] Gradient checking  
 - [ ] Optimization methods  

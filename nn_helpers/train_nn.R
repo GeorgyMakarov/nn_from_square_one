@@ -1,3 +1,18 @@
+#' Train neural network
+#' 
+#' Trains simple one-layer feed-forward neural network.
+#'
+#' @param x matrix of feature variables
+#' @param y matrix of output variable
+#' @param epochs numeric scalar, number of iterations
+#' @param hn numeric scalar, number of hidden layer nodes
+#' @param f character vector, names of activation functions
+#' @param im character scalar, name of initialization method: stand, rand, he
+#' @param lr numeric scalar, learning rate
+#' @param trac logical, track progress if TRUE
+#'
+#' @return list
+#' @export
 train_nn <- function(x, 
                      y, 
                      epochs, 

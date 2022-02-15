@@ -32,7 +32,6 @@ init_params <- function(x, ls, im){
                   "rand"  = init_rand(nl1, nl),
                   "he"    = init_he(nl1, nl))
     
-    # w <- matrix(runif(nl1 * nl), nrow = nl1, ncol = nl, byrow = T) * 0.01
     b <- matrix(rep(0, nl1), nrow = nl1)
     
     out[[paste0("w", i - 1)]] <- w

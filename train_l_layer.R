@@ -69,9 +69,9 @@ fit <- train_nn(x = x_train,
 
 
 # Predict on test set ----------------------------------------------------------
-# pred_fit <- predict_nn(x_test, y_test, fit, act, T, 0.5)
+pred_fit <- predict_nn(x_test, y_test, fit, act, T, 0.5)
 
 
 # Compute model accuracy --------------------------------------------------
-# compute_metrics(y_test, pred_fit, md_name = "neural network", show = T)
+compute_metrics(y_test, pred_fit, md_name = "neural network", show = T)
 
