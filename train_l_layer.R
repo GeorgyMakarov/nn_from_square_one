@@ -65,6 +65,8 @@ fit <- train_nn(x = x_train,
                 hn     = c(10, 5), 
                 f      = act, 
                 im     = "stand",
+                lambda = 0.5,
+                kp     = 1,
                 track  = T)
 
 
