@@ -60,12 +60,12 @@ rm(df, te_set, tr_set)
 act <- c("tanh", "tanh", "sigmoid")
 fit <- train_nn(x = x_train, 
                 y = y_train, 
-                epochs = 6000, 
+                epochs = 20000, 
                 lr     = 0.9, 
                 hn     = c(10, 5), 
                 f      = act, 
                 im     = "stand",
-                lambda = 0.5,
+                lambda = 0.05, ## should not be too much, for now 0.1 is enough
                 kp     = 1,
                 track  = T)
 

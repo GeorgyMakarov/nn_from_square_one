@@ -22,9 +22,9 @@ train_nn <- function(x,
                      hn, 
                      f, 
                      im = c("stand", "rand", "he"),
-                     lambda,
-                     kp,
-                     track = F){
+                     lambda = 0,
+                     kp     = 1,
+                     track  = F){
   
   # Choose initialization method
   if(length(im) > 1){im <- im[1]}
@@ -35,7 +35,7 @@ train_nn <- function(x,
   
   # Initialize parameters
   l      <- get_layer_size(x, y, hn)
-  p      <- init_params(x, l, im)
+  p      <- init_params(x, l, im) ## TODO: add seed to get reproducible results
   cost_h <- c()           ## variable to store cost
   trackr <- 0.1 * epochs  ## variable to trace progress
   
@@ -68,6 +68,7 @@ train_nn <- function(x,
     p      <- update_params(back, p, lr, l)
     cost_h <- c(cost_h, cost)
     
+    if (i == 1){cat("Iteration", i, " | Cost: ", cost, "\n")}
     if (i %% trackr == 0){cat("Iteration", i, " | Cost: ", cost, "\n")}
   }
   
