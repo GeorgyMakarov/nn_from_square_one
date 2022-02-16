@@ -1,6 +1,6 @@
 ---
 title: "Optimize activation functions"
-author: "George Makarov"
+author: "Georgy Makarov"
 date: "25/01/2022"
 output: html_document
 ---

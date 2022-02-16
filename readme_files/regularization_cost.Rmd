@@ -1,0 +1,45 @@
+---
+title: "Regularization cost"
+author: "Georgy Makarov"
+date: "2/16/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Summary
+
+This document justifies the use of `eval` function in `compute_cost_reg` function.
+It shows that `eval` is not slower than hard coded solution. At the same time
+`eval` allows us to find sum of costs for any number of layers without massive
+code constructions.
+
+## Initial data
+
+We reproduce a set of weight matrices as it appears after we have initialized
+the parameters of *nerual network*. Both number of rows and number of columns 
+reflect the sizes of layers of our network. Values of the matrices are random.
+We specifically make the matrices large enough to see the difference between
+computations.
+
+```{r}
+w1 <- matrix(rnorm(160000, 5, 2.3), nrow = 400, ncol = 400)
+w2 <- matrix(rnorm(80000, 3, 1.3),  nrow = 200, ncol = 400)
+w3 <- matrix(rnorm(20000, 1, 0.3),  nrow = 100, ncol = 200)
+```
+
+
+## Comparison
+
+There is no difference in execution time between hard coded and `eval` function.
+This allows us to use the latter for our computations.
+
+```{r}
+system.time(sum(w1 ^ 2) + sum(w2 ^ 2) + sum(w3 ^ 2))
+```
+
+```{r}
+system.time(eval(parse(text = "sum(w1 ^ 2) + sum(w2 ^ 2) + sum(w3 ^ 2)")))
+```

@@ -1,6 +1,6 @@
 ---
 title: "Backward propagation"
-author: "George Makarov"
+author: "Georgy Makarov"
 date: "26/01/2022"
 output: html_document
 ---
