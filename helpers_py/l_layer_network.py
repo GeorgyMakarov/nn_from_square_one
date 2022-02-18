@@ -51,3 +51,14 @@ b1 = np.array(b1).reshape(5, 1)
 
 z, lin = linear_fwd(x, w1, b1)
 a, aca = linear_act_fwd(x, w1, b1, "sigmoid")
+
+
+"""
+Testing of dropout
+"""
+a1 = a
+kp = 0.5
+d1 = np.random.rand(a1.shape[0], a1.shape[1])
+d1 = (d1 < kp).astype(int)
+a1 = a1 * d1
+a1 = a1 / kp
