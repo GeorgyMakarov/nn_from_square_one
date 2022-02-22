@@ -60,14 +60,15 @@ rm(df, te_set, tr_set)
 act <- c("tanh", "tanh", "sigmoid")
 fit <- train_nn(x = x_train, 
                 y = y_train, 
-                epochs = 20000, 
+                epochs = 6000, 
                 lr     = 0.9, 
                 hn     = c(10, 5), 
                 f      = act, 
                 im     = "stand",
                 lambda = 0,
                 kp     = 1,
-                track  = T)
+                track  = T,
+                optim  = "gd")
 
 
 # Predict on test set ----------------------------------------------------------

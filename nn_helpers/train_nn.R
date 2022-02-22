@@ -1,6 +1,8 @@
 #' Train neural network
 #' 
-#' Trains simple one-layer feed-forward neural network.
+#' Trains feed forward neural network. This function uses gradient descent or
+#' Adam optimization algorithm. User can select different network architectures
+#' and tune hyper parameters.
 #'
 #' @param x matrix of feature variables
 #' @param y matrix of output variable
@@ -11,7 +13,10 @@
 #' @param im character scalar, name of initialization method: stand, rand, he
 #' @param lambda
 #' @param kp
-#' @param trac logical, track progress if TRUE
+#' @param track logical, track progress if TRUE
+#' @param optim character scalar, optimization algorithm: gradient descent, Adam
+#' @param beta1 numeric scalar, coefficient for Adam algorithm
+#' @param beta2 numeric scalar, coefficient for Adam algorithm
 #'
 #' @return list
 #' @export
@@ -24,54 +29,18 @@ train_nn <- function(x,
                      im = c("stand", "rand", "he"),
                      lambda = 0,
                      kp     = 1,
-                     track  = F){
-  
-  # Choose initialization method
-  if(length(im) > 1){im <- im[1]}
-  if (!(im %in% c("stand", "rand", "he"))){
-    im <- "stand"
-    cat("warning: defaulting to standard initialization method \n")
+                     track  = F,
+                     optim  = c("gd", "adam"),
+                     beta1  = 0.9,
+                     beta2  = 0.999,
+                     epsil  = 1e-08){
+  if (is.null(optim)){optim <- "gd"}
+  if (length(optim) == 2){optim <- "gd"}
+  if (optim == "gd"){
+    res <- train_nn_standard(x, y, epochs, lr, hn, f, im, lambda, kp, track)
+  } else {
+    res <- train_nn_adam(x, y, epochs, lr, hn, f, im, lambda, kp, track, beta1, 
+                         beta2, epsil)
   }
-  
-  # Initialize parameters
-  l      <- get_layer_size(x, y, hn)
-  p      <- init_params(x, l, im) ## TODO: add seed to get reproducible results
-  cost_h <- c()           ## variable to store cost
-  trackr <- 0.1 * epochs  ## variable to trace progress
-  
-  # Iterate over epochs
-  for (i in 1:epochs){
-    
-    # Forward propagation depends on drop out
-    if (kp == 1){
-      fwd <- forward_propagation(x, p, f, l)
-    } else {
-      fwd <- forward_propagation_dropout(x, p, f, l, kp)
-    }
-    
-    # Cost depends on regularization
-    if (lambda == 0){
-      cost   <- compute_cost(x, y, fwd, l)
-    } else {
-      cost   <- compute_cost_reg(x, y, fwd, l, lambda)
-    }
-    
-    # Back propagation depends on drop out and regularization
-    if (lambda == 0 && kp == 1){
-      back   <- back_propagation(x, y, p, fwd, l, f)
-    } else if (lambda != 0){
-      back   <- back_propagation_reg(x, y, p, fwd, l, f, lambda)
-    } else if (kp < 1){
-      back   <- back_propagation_dropout(x, y, p, fwd, l, f, kp)
-    }
-    
-    p      <- update_params(back, p, lr, l)
-    cost_h <- c(cost_h, cost)
-    
-    if (i == 1){cat("Iteration", i, " | Cost: ", cost, "\n")}
-    if (i %% trackr == 0){cat("Iteration", i, " | Cost: ", cost, "\n")}
-  }
-  
-  res <- list("params" = p, "cost_history" = cost_h, "hn" = hn)
   return(res)
 }
