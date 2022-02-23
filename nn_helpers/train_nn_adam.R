@@ -16,6 +16,7 @@
 #' @param beta1 numeric scalar, B1 for Adam computation
 #' @param beta2 numeric scalar, B2 for Adam computation
 #' @param epsilon numeric scalar, E for Adam computation
+#' @param b_size numeric scalar, mini batch size
 #'
 #' @return list
 #' @export
@@ -31,7 +32,8 @@ train_nn_adam <- function(x,
                           track   = F,
                           beta1   = 0.9,
                           beta2   = 0.999,
-                          epsilon = 1e-08){
+                          epsilon = 1e-08,
+                          b_size  = 64){
   
   # Choose initialization method
   if(length(im) > 1){im <- im[1]}
@@ -41,17 +43,35 @@ train_nn_adam <- function(x,
   l      <- get_layer_size(x, y, hn)
   p      <- init_params(x, l, im) ## TODO: add seed to get reproducible results
   cost_h <- c()           ## variable to store cost
+  t      <- 0             ## Adam counter
   trackr <- 0.1 * epochs  ## variable to trace progress
+  vs     <- init_adam(p)  ## initialize Adam parameters
+  seed   <- 123           ## seed for representative results
   
   # Iterate over epochs
   for (i in 1:epochs){
     
-    # Forward propagation depends on drop out
-    if (kp == 1){
-      fwd <- forward_propagation(x, p, f, l)
-    } else {
-      fwd <- forward_propagation_dropout(x, p, f, l, kp)
+    seed   <- seed + 1
+    cost_t <- 0
+    mini_b <- random_mini_batch(x, y, b_size, seed)
+    
+    for (mb in mini_b){
+      
+      mini_x <- mb[['x']]
+      mini_y <- mb[['y']]
+      
+      # Forward propagation depends on drop out
+      if (kp == 1){
+        fwd <- forward_propagation(mini_x, p, f, l)
+      } else {
+        fwd <- forward_propagation_dropout(mini_x, p, f, l, kp)
+      }
+      
+      
+      
     }
+    
+    
     
     # Cost depends on regularization
     if (lambda == 0){
