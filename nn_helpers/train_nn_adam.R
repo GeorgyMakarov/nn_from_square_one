@@ -53,6 +53,17 @@ train_nn_adam <- function(x,
     
     seed   <- seed + 1
     cost_t <- 0
+    
+    ### ---        Temporary reproduce multiple batch for dev            --- ###
+    x1 <- x
+    x2 <- x
+    x  <- cbind(x1, x2)
+    
+    y1 <- y
+    y2 <- y
+    y  <- cbind(y1, y2)
+    ### ---                             End                              --- ###
+    
     mini_b <- random_mini_batch(x, y, b_size, seed)
     
     for (mb in mini_b){
@@ -67,29 +78,30 @@ train_nn_adam <- function(x,
         fwd <- forward_propagation_dropout(mini_x, p, f, l, kp)
       }
       
+      # Cost depends on regularization
+      if (lambda == 0){
+        cost   <- compute_cost(mini_x, mini_y, fwd, l)
+      } else {
+        cost   <- compute_cost_reg(mini_x, mini_y, fwd, l, lambda)
+      }
       
+      cost_t <- cost_t + cost
+      
+      # Back propagation depends on drop out and regularization
+      if (lambda == 0 && kp == 1){
+        back   <- back_propagation(x, y, p, fwd, l, f)
+      } else if (lambda != 0){
+        back   <- back_propagation_reg(x, y, p, fwd, l, f, lambda)
+      } else if (kp < 1){
+        back   <- back_propagation_dropout(x, y, p, fwd, l, f, kp)
+      }
+      
+      t  <- t + 1
+      p  <- update_adam(back, p, vs, "p",  t, lr, beta1, beta2, epsilon)
+      vs <- update_adam(back, p, vs, "vs", t, lr, beta1, beta2, epsilon)
       
     }
     
-    
-    
-    # Cost depends on regularization
-    if (lambda == 0){
-      cost   <- compute_cost(x, y, fwd, l)
-    } else {
-      cost   <- compute_cost_reg(x, y, fwd, l, lambda)
-    }
-    
-    # Back propagation depends on drop out and regularization
-    if (lambda == 0 && kp == 1){
-      back   <- back_propagation(x, y, p, fwd, l, f)
-    } else if (lambda != 0){
-      back   <- back_propagation_reg(x, y, p, fwd, l, f, lambda)
-    } else if (kp < 1){
-      back   <- back_propagation_dropout(x, y, p, fwd, l, f, kp)
-    }
-    
-    p  <- update_params(back, p, lr, l)
     cost_h <- c(cost_h, cost)
     
     if (i == 1){cat("Iteration", i, " | Cost: ", cost, "\n")}
