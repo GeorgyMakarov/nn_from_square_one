@@ -71,6 +71,8 @@ train_nn_adam <- function(x,
       mini_x <- mb[['x']]
       mini_y <- mb[['y']]
       
+      dim(mini_y) <- c(dim(y)[1], length(mini_y))
+      
       # Forward propagation depends on drop out
       if (kp == 1){
         fwd <- forward_propagation(mini_x, p, f, l)
@@ -89,16 +91,17 @@ train_nn_adam <- function(x,
       
       # Back propagation depends on drop out and regularization
       if (lambda == 0 && kp == 1){
-        back   <- back_propagation(x, y, p, fwd, l, f)
+        back   <- back_propagation(mini_x, mini_y, p, fwd, l, f)
       } else if (lambda != 0){
-        back   <- back_propagation_reg(x, y, p, fwd, l, f, lambda)
+        back   <- back_propagation_reg(mini_x, mini_y, p, fwd, l, f, lambda)
       } else if (kp < 1){
-        back   <- back_propagation_dropout(x, y, p, fwd, l, f, kp)
+        back   <- back_propagation_dropout(mini_x, mini_y, p, fwd, l, f, kp)
       }
       
-      t  <- t + 1
-      p  <- update_adam(back, p, vs, "p",  t, lr, beta1, beta2, epsilon)
-      vs <- update_adam(back, p, vs, "vs", t, lr, beta1, beta2, epsilon)
+      t        <- t + 1
+      adm_upd  <- update_adam(back, p, vs, l, t, lr, beta1, beta2, epsilon)
+      p        <- adm_upd$p
+      vs       <- adm_upd$vs
       
     }
     
