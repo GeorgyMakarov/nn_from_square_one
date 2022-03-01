@@ -6,7 +6,7 @@ pa <- "./activation_helpers"
 ph <- "./nn_helpers"
 
 acts  <- list.files(path = pa)
-hlps <- list.files(path = ph)
+hlps  <- list.files(path = ph)
 
 invisible(lapply(X = acts, FUN = function(x){source(paste0(pa, '/', x))}))
 invisible(lapply(X = hlps, FUN = function(x){source(paste0(ph, '/', x))}))

@@ -47,23 +47,13 @@ train_nn_adam <- function(x,
   trackr <- 0.1 * epochs  ## variable to trace progress
   vs     <- init_adam(p)  ## initialize Adam parameters
   seed   <- 123           ## seed for representative results
+  m      <- dim(x)[2]     ## number of observations
   
   # Iterate over epochs
   for (i in 1:epochs){
     
     seed   <- seed + 1
     cost_t <- 0
-    
-    ### ---        Temporary reproduce multiple batch for dev            --- ###
-    x1 <- x
-    x2 <- x
-    x  <- cbind(x1, x2)
-    
-    y1 <- y
-    y2 <- y
-    y  <- cbind(y1, y2)
-    ### ---                             End                              --- ###
-    
     mini_b <- random_mini_batch(x, y, b_size, seed)
     
     for (mb in mini_b){
@@ -102,11 +92,10 @@ train_nn_adam <- function(x,
       adm_upd  <- update_adam(back, p, vs, l, t, lr, beta1, beta2, epsilon)
       p        <- adm_upd$p
       vs       <- adm_upd$vs
-      
     }
     
-    cost_h <- c(cost_h, cost)
-    
+    cost_avg <- cost_t / m
+    browser()
     if (i == 1){cat("Iteration", i, " | Cost: ", cost, "\n")}
     if (i %% trackr == 0){cat("Iteration", i, " | Cost: ", cost, "\n")}
   }

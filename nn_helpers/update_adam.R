@@ -13,8 +13,8 @@ update_adam <- function(bck, p, vs, l, t, lr, beta1, beta2, eps){
   for (i in 1:l){
     
     # Define layer names allows to save printing below
-    w  <- paste('w', i)
-    b  <- paste('b', i) 
+    w  <- paste0('w', i)
+    b  <- paste0('b', i) 
     dw <- paste0('dw', i)
     db <- paste0('db', i)
     
@@ -24,22 +24,23 @@ update_adam <- function(bck, p, vs, l, t, lr, beta1, beta2, eps){
     
     # Compute bias-corrected first moment
     v_adj[[dw]] <- v[[dw]] / (1 - (beta1 ^ t))
-    v_adj[[db]] <- v[[dw]] / (1 - (beta1 ^ t))
+    v_adj[[db]] <- v[[db]] / (1 - (beta1 ^ t))
     
     # Compute moving average of squared gradient
-    # TODO: find how to power matrix -- below does not work
-    s[[dw]] <- (beta2 * s[[dw]]) + ((1 - beta2) * (bck[[dw]] %^% 2))
-    s[[db]] <- (beta2 * s[[db]]) + ((1 - beta2) * (bck[[db]] %^% 2))
+    s[[dw]] <- (beta2 * s[[dw]]) + ((1 - beta2) * (bck[[dw]] ^ 2))
+    s[[db]] <- (beta2 * s[[db]]) + ((1 - beta2) * (bck[[db]] ^ 2))
     
     # Compute bias-corrected second moment
     s_adj[[dw]] <- s[[dw]] / (1 - (beta2 ^ t))
     s_adj[[db]] <- s[[db]] / (1 - (beta2 ^ t))
     
     # Update parameters
-    p[[w]]
-    p[[b]]
+    p[[w]] <- p[[w]] - lr * v_adj[[dw]] / (sqrt(s_adj[[dw]]) + eps)
+    p[[b]] <- p[[b]] - lr * v_adj[[db]] / (sqrt(s_adj[[db]]) + eps)
     
   }
   
+  res_vs <- list("v" = v, "s"  = s)
+  res    <- list("p" = p, "vs" = res_vs)
   return(res)
 }
