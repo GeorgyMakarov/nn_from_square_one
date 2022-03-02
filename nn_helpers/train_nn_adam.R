@@ -94,10 +94,10 @@ train_nn_adam <- function(x,
       vs       <- adm_upd$vs
     }
     
-    cost_avg <- cost_t / m
-    browser()
-    if (i == 1){cat("Iteration", i, " | Cost: ", cost, "\n")}
-    if (i %% trackr == 0){cat("Iteration", i, " | Cost: ", cost, "\n")}
+    cost_avg <- cost_t / length(mini_b)
+    
+    if (i == 1){cat("Iteration", i, " | Cost: ", cost_avg, "\n")}
+    if (i %% trackr == 0){cat("Iteration", i, " | Cost: ", cost_avg, "\n")}
   }
   
   res <- list("params" = p, "cost_history" = cost_h, "hn" = hn)
