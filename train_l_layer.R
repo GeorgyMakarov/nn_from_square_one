@@ -68,7 +68,7 @@ fit <- train_nn(x = x_train,
                 lambda = 0,
                 kp     = 1,
                 track  = T,
-                optim  = "adam")
+                optim  = "gd")
 
 
 # Predict on test set ----------------------------------------------------------
